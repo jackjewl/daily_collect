@@ -101,7 +101,12 @@ def clean_str(value):
         return ""
     return value
 
-
+def clean_name(value):
+    value=str(value)
+    value=value.replace(" ","")
+    value=value.replace("*","")
+    value=value.replace("-","")
+    return value
 
 def clean(raw_file_path: str) -> str:
     df = pd.read_csv(raw_file_path, encoding="gbk", sep="\t", dtype="str")
@@ -128,6 +133,7 @@ def clean(raw_file_path: str) -> str:
     df[number_list] = df[number_list].applymap(str2floatstr)
     df = df[df["名称"] != "无"]
     df = df[df["代码"] != ""]
+    df["名称"] = df[["名称"]].applymap(clean_name)
     df[str_list] = df[str_list].applymap(clean_str)
     df.to_csv("./cleaned_个股数据.csv", encoding="utf-8", index=False, sep=",")
     rename_map = {
